@@ -96,8 +96,6 @@ How users access the application without ever reaching the private instances dir
 3. **Routing:** After validating the Security Group rules, the ALB forwards the request to the **Target Group**.
 4. **Private Processing:** The EC2 instances in the **Private Subnets** receive the traffic on Port 8000, process it, and send the response back through the ALB.
 
-> **Visual Proof:** See the Load Balancer setup in the snapshots below.
-![Load Balancer Output](./snapshots/load_balancer_output.png)
 
 ### 2. Outbound Traffic (App to Internet)
 How private instances securely fetch updates or external data:
