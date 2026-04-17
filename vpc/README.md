@@ -85,5 +85,39 @@ Once inside the private instance via the Bastion:
 3.  Paste the DNS name into your web browser.
 4.  If successful, the browser will display the "Production App" header, confirming that the ALB is correctly routing public traffic to your private-subnet instances.
 
+## 🔄 Traffic Flow & Connectivity
+
+This section explains how data moves through the architecture, ensuring high security by keeping application instances in private subnets.
+
+### 1. Inbound Traffic (Internet to App)
+How users access the application without ever reaching the private instances directly:
+1. **User Request:** A user hits the **Application Load Balancer (ALB)** DNS name.
+2. **Public Entry:** The ALB (located in **Public Subnets**) receives the traffic on Port 80.
+3. **Routing:** After validating the Security Group rules, the ALB forwards the request to the **Target Group**.
+4. **Private Processing:** The EC2 instances in the **Private Subnets** receive the traffic on Port 8000, process it, and send the response back through the ALB.
+
+> **Visual Proof:** See the Load Balancer setup in the snapshots below.
+![Load Balancer Output](./snapshots/load_balancer_output.png)
+
+### 2. Outbound Traffic (App to Internet)
+How private instances securely fetch updates or external data:
+1. **Initiation:** A private EC2 instance initiates an outbound request (e.g., `sudo apt update`).
+2. **NAT Gateway:** The request is routed to the **NAT Gateway** in the **Public Subnet**.
+3. **Internet Bridge:** The NAT Gateway masks the private IP and sends the request to the internet via the **Internet Gateway (IGW)**.
+4. **Secure Return:** Data returns to the NAT Gateway, which routes it back to the specific private instance that requested it.
+
+---
+
+## 🖼️ Architecture Snapshots
+
+Below are the visual implementations of the infrastructure described above:
+
+### Full VPC Design
+![VPC Architecture](./snapshots/architecture.png)
+
+### Deployment Verification
+![Load Balancer Verification](./snapshots/load_balancer_output.png)
+
+
 ## 📜 Credits
 This implementation is based on the [Day-7 AWS VPC Project](https://www.youtube.com/watch?v=FZPTL_kNvXc) from the **AWS Zero to Hero** series by [Abhishek Veeramalla](https://www.youtube.com/@AbhishekVeeramalla).
